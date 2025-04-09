@@ -1,5 +1,5 @@
 package modelo;
-
+import vista.VentanaInicio;
 public class Alumno {
     private String numControl;
     private  String nombre;
@@ -8,6 +8,7 @@ public class Alumno {
     private byte edad;
     private byte  semestre;
     private  String carrera;
+public VentanaInicio abcc_datos_pantalla = new VentanaInicio();
 
     public Alumno(String numControl, String nombre, String primerApellido, String segundoApellido, byte edad, byte semestre, String carrera) {
         this.numControl = numControl;

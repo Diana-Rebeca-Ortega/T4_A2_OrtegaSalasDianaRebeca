@@ -1,7 +1,11 @@
 package Controlador;
-
+//importar otros paquetes
 import conexionBD.ConexionBD;
 import modelo.Alumno;
+import vista.VentanaABCC;
+
+
+//importar librerias
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,13 +14,22 @@ import java.util.ArrayList;
 //DAO - DATA ACCESSS OBJECT
 public class AlumnoDAO {
     ConexionBD conexionBD = new ConexionBD();
-
+    public VentanaABCC abcc_datos_pantalla = new VentanaABCC();
     //MMMMMMMMMMMMMMMMMMMMMMETODOS ABCCccccccccccccccccccccccccccccccccc
 
 
     //***************************************ALTAS*******************************
+
+
+    public void agregarAlumno(Boolean sionoAgregarAlumno) {
+        System.out.println(sionoAgregarAlumno);
+    }
+
     public boolean agregarAlumno(Alumno alumno){
-        String sql = "INSERT INTO alumnos VALUES('6','86','86','86',86 ,86 , '86'  )";
+        System.out.println("numcontrol"+alumno.getNumControl());
+        String sql = "INSERT INTO alumnos VALUES('"+alumno.getNumControl()+"','"+alumno.getNombre()+
+                "','"+alumno.getPrimerApellido()+"','"+alumno.getSegundoApellido()+"'," +
+                ""+alumno.getEdad()+"  ,"+alumno.getSemestre()+" , '"+alumno.getCarrera()+"'  )";
         return  conexionBD.ejecutarInstruccionLMD(sql);//retorta 0, 1 o 2... false o true
     }
 
