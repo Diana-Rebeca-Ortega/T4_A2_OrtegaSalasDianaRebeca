@@ -166,11 +166,8 @@ public class VentanaABCC {
             if(e.getSource()==btnCAceptar){
                 System.out.println("se uso el boton aceotar");
 AlumnoDAO alumnoDAO = new AlumnoDAO();
-alumnoDAO.agregarAlumno(sionoAgregarAlumno);
-                sionoAgregarAlumno=true;
 
-            }else {
-                sionoAgregarAlumno=false;
+
             }
 
         }

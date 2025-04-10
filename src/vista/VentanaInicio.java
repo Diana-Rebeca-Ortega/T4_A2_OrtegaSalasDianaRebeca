@@ -8,12 +8,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
-
- class Altas_Alumnos extends JFrame implements ActionListener {
+//********************************************************************************************
+//**************************    ALTAS   *********************************************************
+class Altas_Alumnos extends JFrame implements ActionListener {
+     //Declaracion de vaiables y componentes
      JTextField cajaApMaterno, cajaNC, cajaApPaterno,  cajaNombres, cajaEdad  ;
      JComboBox comboEDAD, comboSemestre, comboCarrera ;
-
+    JTable tablaAlumnosAltas;
     public void actualizarTabla(JTable tabla) {
         final String Driver_Controlador = "com.mysql.cj.jdbc.Driver";
         final String URL = "jdbc:mysql://localhost:3306/BD_Topicos_2025";
@@ -22,15 +25,13 @@ import java.sql.SQLException;
 
         try {
             ResultSetTableModel modelo = new ResultSetTableModel(Driver_Controlador, URL, CONSULTA);
-            tabla.setModel(modelo);
+           tabla.setModel(modelo);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
     }
-
 
     public Altas_Alumnos() {
         getContentPane().setLayout(null);
@@ -39,6 +40,27 @@ import java.sql.SQLException;
         setSize(630, 480);
         setLocationRelativeTo(null);//locacion en la ventana
         setVisible(true);
+
+        tablaAlumnosAltas = new JTable();
+        tablaAlumnosAltas.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{
+                        {"ee", null, null, null, null, null, null},
+                        {null, null, null, null, null, null, null},
+                        {null, null, null, null, null, null, null},
+                        {null, null, null, null, null, null, null},
+                        {null, null, null, null, null, null, null}
+                },
+                new String[]{
+                        "NO. DE CONTROL", "NOMBRE", "AP. PATERNO", "AP. MATERNO", "EDAD", "SEMESTRE", "CARRERA"
+                }) {
+            boolean[] canEdit = new boolean[]{
+                    false, false, false, false, true, true
+            };
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        });
+        actualizarTabla(tablaAlumnosAltas);
 
 //Panel Verde NEON
         JPanel panelVerde = new JPanel();
@@ -60,19 +82,8 @@ import java.sql.SQLException;
         panelMENTA.setBackground(new Color(173, 252, 186));
         panelMENTA.setBounds(10, 240, 600, 200);
 
-        // Crear un modelo de tabla
-        String[] columnas = {"Num_Control", "Nombre", "1º Apellido", "2º Apellido", "Edad", "Semestre", "Carrera"};
-        Object[][] datos = {
-                {"Dato 1", "Dato 2", "Dato 3", "Dato 4", "Dato 5", "Dato 6", "-"},
-                {"Dato 7", "Dato 8", "Dato 9", "Dato 10", "Dato 11", "Dato 12", "-"},
-                // Agrega más filas según sea necesario
-        };
-
-        // Crear la tabla
-        JTable tabla = new JTable(datos, columnas);
-
 // Agregar la tabla a un JScrollPane
-        JScrollPane scrollPane = new JScrollPane(tabla);
+        JScrollPane scrollPane = new JScrollPane(tablaAlumnosAltas);
         scrollPane.setBounds(10, 10, 580, 180); // Establecer los límites del JScrollPane
 
 // Agregar el JScrollPane al panel
@@ -130,7 +141,7 @@ import java.sql.SQLException;
         add(texSemestre);
 
 
-         comboSemestre = new JComboBox<String>();
+        comboSemestre = new JComboBox<String>();
         comboSemestre.addItem("Elige Semestre...");
         comboSemestre.setBounds(100, 160, 300, 20);
         comboSemestre.addItem("1");
@@ -182,6 +193,15 @@ JLabel texCarrera = new JLabel("CARRERA:");
                     cajaApMaterno.getText(), Byte.parseByte(String.valueOf(comboEDAD.getSelectedItem()))  ,
                     Byte.parseByte(String.valueOf(comboSemestre.getSelectedItem())), String.valueOf(comboCarrera.getSelectedItem()));//Le tenemos que poner parametros vacios para poder hacer el objeto, pero los valores que entraran a la base de datos son los de la instruccion String sql = "INSERT INTO alumnos VALUES('6','86','86','86',86 ,86 , '86'  )";
             AlumnoDAO alumnoDAO = new AlumnoDAO();//AlumnoDao es el objeto del Packete CONTROLADOR que hace la conexion a la BDD
+            actualizarTabla(tablaAlumnosAltas);
+
+            ArrayList<Alumno> lista = alumnoDAO.mostrarAlumnos("");
+
+            for(Alumno alumno : lista)
+                System.out.println(alumno.getNumControl()+"quesito");
+
+            System.out.println(lista+"sal");
+
         if (alumnoDAO.agregarAlumno(a))
             System.out.println("FELICIDADES: se agrego un nuevo Alumno a la BDD (desde la ventanaInicio)");
         else

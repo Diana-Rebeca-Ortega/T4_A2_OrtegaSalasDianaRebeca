@@ -20,11 +20,6 @@ public class AlumnoDAO {
 
     //***************************************ALTAS*******************************
 
-
-    public void agregarAlumno(Boolean sionoAgregarAlumno) {
-        System.out.println(sionoAgregarAlumno);
-    }
-
     public boolean agregarAlumno(Alumno alumno){
         System.out.println("numcontrol"+alumno.getNumControl());
         String sql = "INSERT INTO alumnos VALUES('"+alumno.getNumControl()+"','"+alumno.getNombre()+
@@ -51,31 +46,50 @@ public class AlumnoDAO {
 
 
     //*******************************CONSULTAS/*****************************
-    public  Alumno mostrarAlumno(String filtro){
-        return null;//retorna si existe o no
+    public Alumno mostrarAlumno(String filtro){
+        String sql = "SELECT * FROM Alumnos WHERE Num_Control='"+filtro+"'";
+        System.out.println(sql);
+
+        ResultSet rs = conexionBD.ejecutarInstruccionSQL(sql);
+        Alumno a = null;
+        try {
+            if(rs.next()) {
+                String nc = rs.getString(1);
+                String n = rs.getString("Nombre");
+                String pa = rs.getString(3);
+                String sa = rs.getString("Segundo_Ap");
+                byte e = rs.getByte(5);
+                byte s = rs.getByte(6);
+                String c = rs.getString(7);
+                a = new Alumno(nc, n, pa, sa, e, s, c);
+            }else
+                System.out.println("NO se encontró el registro"); //!!!!!
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return a;
     }
-    public ArrayList<Alumno> mostrarAlumnos(String filtro){
+
+    public ArrayList mostrarAlumnos(String filtro){
         ArrayList<Alumno> listaAlumnos = new ArrayList<>();
         String sql = "SELECT * FROM Alumnos";
-        ResultSet rs= conexionBD.ejecutarInstruccionSQL(sql);
-
-//rs.next() avanza al siguiente registro
-
+        String sql4 = "SELECT * FROM Alumnos WHERE Semestre='"+filtro+"'";
+        ResultSet rs = conexionBD.ejecutarInstruccionSQL(sql);
         try {
-            if (rs!=null&& rs.next()) {
-                do {
-                    String nc = rs.getString(1);
-                    String n = rs.getString("Nombre");
-                    String pa = rs.getString(3);
-                    String sa = rs.getString("SegundoAP");
-                    byte e = rs.getByte(5);
-                    byte s = rs.getByte(6);
-                    String c = rs.getString(7);
-                    Alumno alumno = new Alumno(nc, n, pa, sa, e, s, c);
-                    listaAlumnos.add(alumno);
+            rs.next();
+            do {
+                String nc = rs.getString(1);
+                String n = rs.getString("Nombre");
+                String pa = rs.getString(3);
+                String sa = rs.getString("SegundoAP");
+                byte e = rs.getByte(5);
+                byte s = rs.getByte(6);
+                String c = rs.getString(7);
 
-                } while (rs.next());
-            }//if
+                Alumno a = new Alumno(nc, n, pa, sa, e, s, c);
+                listaAlumnos.add(a);
+            }while (rs.next());
         } catch (SQLException e) {
             e.printStackTrace();
         }
