@@ -21,7 +21,7 @@ public class AlumnoDAO {
     //***************************************ALTAS*******************************
 
     public boolean agregarAlumno(Alumno alumno){
-        System.out.println("numcontrol"+alumno.getNumControl());
+       // System.out.println("numcontrol"+alumno.getNumControl());
         String sql = "INSERT INTO alumnos VALUES('"+alumno.getNumControl()+"','"+alumno.getNombre()+
                 "','"+alumno.getPrimerApellido()+"','"+alumno.getSegundoApellido()+"'," +
                 ""+alumno.getEdad()+"  ,"+alumno.getSemestre()+" , '"+alumno.getCarrera()+"'  )";

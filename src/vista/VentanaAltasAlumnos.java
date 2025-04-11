@@ -1,6 +1,7 @@
 package vista;
 
 import Controlador.AlumnoDAO;
+import conexionBD.ConexionBD;
 import modelo.Alumno;
 import modelo.ResultSetTableModel;
 
@@ -17,12 +18,12 @@ public class VentanaAltasAlumnos {
 //**************************    ALTAS   *********************************************************
     class Altas_Alumnos extends JFrame implements ActionListener {
 
-        JTextField cajaApMaterno, cajaNC, cajaApPaterno,  cajaNombres, cajaEdad  ;
+        JTextField cajaApMaterno, cajaNC, cajaApPaterno,  cajaNombres  ;
         JComboBox comboEDAD, comboSemestre, comboCarrera ;
         JTable tablaAlumnosAltas;
         JButton btnCAceptar, btnBorrar, btnCancelar;
         JPanel panelVerde, panelMENTA;
-
+        ConexionBD conexionBD = new ConexionBD();
         public void actualizarTabla(JTable tabla) {
             final String Driver_Controlador = "com.mysql.cj.jdbc.Driver";
             final String URL = "jdbc:mysql://localhost:3306/BD_Topicos_2025";
@@ -98,7 +99,7 @@ public class VentanaAltasAlumnos {
             texNumConTROL.setBounds(20, 30, 230, 20);
             add(texNumConTROL);
 
-            cajaNC = new JTextField("-");
+            cajaNC = new JTextField("");
             cajaNC.setBounds(160, 33, 200, 15);
             add(cajaNC);
 
@@ -106,7 +107,7 @@ public class VentanaAltasAlumnos {
             texNombres.setBounds(20, 55, 300, 20);
             add(texNombres);
 
-            cajaNombres = new JTextField("-");
+            cajaNombres = new JTextField("");
             cajaNombres.setBounds(100, 60, 200, 15);
             add(cajaNombres);
 
@@ -114,7 +115,7 @@ public class VentanaAltasAlumnos {
             texApPaterno.setBounds(20, 80, 300, 20);
             add(texApPaterno);
 
-            cajaApPaterno = new JTextField("-");
+            cajaApPaterno = new JTextField("");
             cajaApPaterno.setBounds(150, 85, 200, 15);
             add(cajaApPaterno);
 
@@ -122,7 +123,7 @@ public class VentanaAltasAlumnos {
             texApMaterno.setBounds(20, 110, 300, 20);
             add(texApMaterno);
 
-            cajaApMaterno = new JTextField("-");
+            cajaApMaterno = new JTextField("");
             cajaApMaterno.setBounds(150, 115, 200, 15);
             add(cajaApMaterno);
 
@@ -174,43 +175,79 @@ public class VentanaAltasAlumnos {
             btnBorrar = new JButton("BORRAR");
             btnBorrar.setBounds(450, 100, 100, 20);
             add(btnBorrar);
+            btnBorrar.addActionListener(this);
 
             btnCancelar = new JButton("CANCELAR");
             btnCancelar.setBounds(450, 150, 100, 20);
             add(btnCancelar);
+            btnCancelar.addActionListener(this);
 
         }//Altas_Alumnos JFrame
-
+        int filasAñadidas=0;
+        int filasOriginales=0;
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == btnCAceptar) {
+        try {
                 System.out.println("se uso el boton aceptar");
 //------------------------PRUEBA PROCESO ALTAS-------------------------------
+
                 Alumno a = new Alumno(cajaNC.getText(), cajaNombres.getText(),cajaApPaterno.getText(),
                         cajaApMaterno.getText(), Byte.parseByte(String.valueOf(comboEDAD.getSelectedItem()))  ,
                         Byte.parseByte(String.valueOf(comboSemestre.getSelectedItem())), String.valueOf(comboCarrera.getSelectedItem()));
                 //Le tenemos que poner parametros vacios para poder hacer el objeto, pero los valores que entraran a la base de datos son los de la instruccion String sql = "INSERT INTO alumnos VALUES('6','86','86','86',86 ,86 , '86'  )";
                 AlumnoDAO alumnoDAO = new AlumnoDAO();//AlumnoDao es el objeto del Packete CONTROLADOR que hace la conexion a la BDD
-                actualizarTabla(tablaAlumnosAltas);
 
-                //Aqui tenemos acceso a cualquier elemento de la tabla
-                ArrayList<Alumno> lista = alumnoDAO.mostrarAlumnos("");
-                for(Alumno alumno : lista)
-                    System.out.println(alumno.getNumControl()+"quesito");
-
-                if (alumnoDAO.agregarAlumno(a))
+                if (alumnoDAO.agregarAlumno(a)) {
+                    filasAñadidas++;
+                    actualizarTabla(tablaAlumnosAltas);
                     System.out.println("FELICIDADES: se agrego un nuevo Alumno a la BDD (desde la ventanaInicio)");
-                else
+                }else
                     System.out.println("ERROR: no se pudo agregar un nuevo Alumno a la BDD (desde la ventanaInicio)");
-            }//cuando el escuchador detecte a btn_ACEPTAR
-            if (e.getSource() == btnBorrar) {
-
+        }catch (Exception exception ){
+            System.out.println("Validación de datos ");
+            if (comboEDAD.getSelectedItem().equals("Elige EDAD...")){
+                JOptionPane.showMessageDialog(null,  "No has elegido una edad ");
             }
-            if (e.getSource() == btnCancelar) {
+            if (comboCarrera.getSelectedItem().equals("Elige Carrera...")){
+                JOptionPane.showMessageDialog(null,  "No has elegido una carrera ");
+            }
+            if (comboSemestre.getSelectedItem().equals("Elige Semestre...")){
+                JOptionPane.showMessageDialog(null,  "No has elegido un semestre ");
+            }
 
+        }
+
+            }//cuando el escuchador detecte a btn_ACEPTAR
+
+            if (e.getSource() == btnBorrar) {//**********************************************************************
+cajaNC.setText("");
+cajaApPaterno.setText("");
+cajaApMaterno.setText("");
+cajaNombres.setText("");
+comboCarrera.setSelectedIndex(0);
+comboSemestre.setSelectedIndex(0);
+comboEDAD.setSelectedIndex(0);
+            }
+            if (e.getSource() == btnCancelar) {//**************************************************************
+//quita los registros ingresados hasta el momento
+              //  System.out.println( tablaAlumnosAltas.getRowCount()+"tamaño filas");
+                filasOriginales= tablaAlumnosAltas.getRowCount()- filasAñadidas;
+               // System.out.println("el ultimo es"+tablaAlumnosAltas.getValueAt(tablaAlumnosAltas.getRowCount()-1, 0));
+              //  System.out.println("añadidos"+filasAñadidas);
+                setVisible(false);
+                for (   int i =1; i <= filasAñadidas;i++  ){
+                    System.out.println(i+" añadido");
+
+                    String sql = "DELETE FROM alumnos WHERE Num_Control='"+
+                            tablaAlumnosAltas.getValueAt(tablaAlumnosAltas.getRowCount()-i, 0)+"' ";
+                    conexionBD.ejecutarInstruccionLMD(sql);
+
+                }//for
             }
 
         }//Escuchador de botones ACEPTAR, CANCELAR, BORRAR
+
 
     }//class altas_Alumnos
 }
