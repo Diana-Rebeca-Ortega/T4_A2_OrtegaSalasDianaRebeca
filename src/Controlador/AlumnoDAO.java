@@ -2,7 +2,7 @@ package Controlador;
 //importar otros paquetes
 import conexionBD.ConexionBD;
 import modelo.Alumno;
-import vista.VentanaABCC;
+
 
 
 //importar librerias
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 //DAO - DATA ACCESSS OBJECT
 public class AlumnoDAO {
     ConexionBD conexionBD = new ConexionBD();
-    public VentanaABCC abcc_datos_pantalla = new VentanaABCC();
+
     //MMMMMMMMMMMMMMMMMMMMMMETODOS ABCCccccccccccccccccccccccccccccccccc
 
 

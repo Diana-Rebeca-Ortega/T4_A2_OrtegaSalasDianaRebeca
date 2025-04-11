@@ -7,223 +7,121 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-//********************************************************************************************
-//**************************    ALTAS   *********************************************************
-class Altas_Alumnos extends JFrame implements ActionListener {
-     //Declaracion de vaiables y componentes
-     JTextField cajaApMaterno, cajaNC, cajaApPaterno,  cajaNombres, cajaEdad  ;
-     JComboBox comboEDAD, comboSemestre, comboCarrera ;
-    JTable tablaAlumnosAltas;
-    public void actualizarTabla(JTable tabla) {
-        final String Driver_Controlador = "com.mysql.cj.jdbc.Driver";
-        final String URL = "jdbc:mysql://localhost:3306/BD_Topicos_2025";
-        final String CONSULTA = " select * from alumnos;";
-        //el final se refiere a que son constantes
 
-        try {
-            ResultSetTableModel modelo = new ResultSetTableModel(Driver_Controlador, URL, CONSULTA);
-           tabla.setModel(modelo);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
+class VentanaPantallaCompleta extends JFrame implements  ActionListener{
+    JMenuBar menuBar;
+    JMenu menuAlumnos, menuDocentes, menuMaterias;
+    JMenuItem itemAltas, itemEliminar, itemModificaciones, itemConsultas;
 
-    public Altas_Alumnos() {
-        getContentPane().setLayout(null);
+    public VentanaPantallaCompleta() {
+        ImageIcon imagenFondo = new ImageIcon("C:\\Users\\Marcelo\\Documents\\000SEXTO\\practicas2025IntelliJ\\Proyecto_ABCD2025\\src\\vista\\BosqueOscuro.png");
+        JLabel fondo = new JLabel(imagenFondo);
         setDefaultCloseOperation(EXIT_ON_CLOSE);//para que no queden registros en la ram
-        setTitle("Altas Alunos");
-        setSize(630, 480);
+        setTitle("Proyecto ABCC");
+        setSize(imagenFondo.getIconWidth(), imagenFondo.getIconHeight());
         setLocationRelativeTo(null);//locacion en la ventana
         setVisible(true);
-
-        tablaAlumnosAltas = new JTable();
-        tablaAlumnosAltas.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-                        {"ee", null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null}
-                },
-                new String[]{
-                        "NO. DE CONTROL", "NOMBRE", "AP. PATERNO", "AP. MATERNO", "EDAD", "SEMESTRE", "CARRERA"
-                }) {
-            boolean[] canEdit = new boolean[]{
-                    false, false, false, false, true, true
-            };
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
-            }
-        });
-        actualizarTabla(tablaAlumnosAltas);
-
-//Panel Verde NEON
-        JPanel panelVerde = new JPanel();
-        panelVerde.setLayout(null);
-        panelVerde.setBackground(new Color(11, 178, 16));
-        panelVerde.setBounds(0, 0, 610, 30);
-
-        JLabel texALTAS = new JLabel("    ALTAS ALUMNOS:");
-        texALTAS.setBounds(10, 00, 300, 20);
-        texALTAS.setBackground(new Color(200, 201, 241));
-        texALTAS.setForeground(Color.WHITE);
-        panelVerde.add(texALTAS);
-
-        add(panelVerde);
-
-//PANEL VERDE MENTA
-        JPanel panelMENTA = new JPanel();
-        panelMENTA.setLayout(null);
-        panelMENTA.setBackground(new Color(173, 252, 186));
-        panelMENTA.setBounds(10, 240, 600, 200);
-
-// Agregar la tabla a un JScrollPane
-        JScrollPane scrollPane = new JScrollPane(tablaAlumnosAltas);
-        scrollPane.setBounds(10, 10, 580, 180); // Establecer los límites del JScrollPane
-
-// Agregar el JScrollPane al panel
-        panelMENTA.add(scrollPane);
-
-        add(panelMENTA);
+        add(fondo);
+        fondo.setLayout(null);
 
 
-        JLabel texNumConTROL = new JLabel("NUMERO DE CONTROL:");
-        texNumConTROL.setBounds(20, 30, 230, 20);
-        add(texNumConTROL);
+        menuBar = new JMenuBar();
 
-        cajaNC = new JTextField("-");
-        cajaNC.setBounds(160, 33, 200, 15);
-        add(cajaNC);
+        menuAlumnos = new JMenu ("Alumnos");
+        menuDocentes = new JMenu ("Docentes");
+        menuMaterias = new JMenu ("Materias");
+        menuBar.add(menuAlumnos);
+        menuBar.add(menuDocentes);
+        menuBar.add(menuMaterias);
 
-        JLabel texNombres = new JLabel("NOMBRES:");
-        texNombres.setBounds(20, 55, 300, 20);
-        add(texNombres);
+        itemAltas = new JMenuItem ("Agregar");
+        itemEliminar = new JMenuItem ("Eliminar");
+        itemModificaciones = new JMenuItem ("Modificaciones");
+        itemConsultas = new JMenuItem ("Consultas");
 
-        cajaNombres = new JTextField("-");
-        cajaNombres.setBounds(100, 60, 200, 15);
-        add(cajaNombres);
+        itemAltas.addActionListener(this);
+        itemEliminar.addActionListener(this);
+        itemModificaciones.addActionListener(this);
+        itemConsultas.addActionListener(this);
 
-        JLabel texApPaterno = new JLabel("APELLIDO PATERNO:");
-        texApPaterno.setBounds(20, 80, 300, 20);
-        add(texApPaterno);
-
-        cajaApPaterno = new JTextField("-");
-        cajaApPaterno.setBounds(150, 85, 200, 15);
-        add(cajaApPaterno);
-
-        JLabel texApMaterno = new JLabel("APELLIDO MATERNO:");
-        texApMaterno.setBounds(20, 110, 300, 20);
-        add(texApMaterno);
-
-        cajaApMaterno = new JTextField("-");
-        cajaApMaterno.setBounds(150, 115, 200, 15);
-        add(cajaApMaterno);
-
-        JLabel texEdad = new JLabel("EDAD:");
-        texEdad.setBounds(20, 135, 300, 20);
-        add(texEdad);
-
-         comboEDAD = new JComboBox<String>();
-        comboEDAD.addItem("Elige EDAD...");
-        for(int i =1; i <99;i++){
-            comboEDAD.addItem(i);
-        }
-        comboEDAD.setBounds(100, 135,300,20);
-        add(comboEDAD);
-
-        JLabel texSemestre = new JLabel("SEMESTRE:");
-        texSemestre.setBounds(20, 160, 300, 20);
-        add(texSemestre);
-
-
-        comboSemestre = new JComboBox<String>();
-        comboSemestre.addItem("Elige Semestre...");
-        comboSemestre.setBounds(100, 160, 300, 20);
-        comboSemestre.addItem("1");
-        comboSemestre.addItem("2");
-        comboSemestre.addItem("3");
-        comboSemestre.addItem("4");
-        comboSemestre.addItem("5");
-        comboSemestre.addItem("6");
-        add(comboSemestre);
-
-
-JLabel texCarrera = new JLabel("CARRERA:");
-        texCarrera.setBounds(20, 185, 300, 20);
-        add(texCarrera);
-
-         comboCarrera = new JComboBox<String>();
-        comboCarrera.addItem("Elige Carrera...");
-        comboCarrera.setBounds(100, 185, 300, 20);
-        comboCarrera.addItem("Ingenieria en Sistemas Computaconalesº");
-        comboCarrera.addItem("Ingenieria Mecatronicaº");
-        comboCarrera.addItem("Ingenieria en Industrias Alimentariasº");
-        add(comboCarrera);
-
-
-        btnCAceptar = new JButton("AGREGAR");
-        btnCAceptar.setBounds(450, 50, 100, 20);
-        add(btnCAceptar);
-        btnCAceptar.addActionListener(this);
-
-        btnBorrar = new JButton("BORRAR");
-        btnBorrar.setBounds(450, 100, 100, 20);
-        add(btnBorrar);
-
-        btnCancelar = new JButton("CANCELAR");
-        btnCancelar.setBounds(450, 150, 100, 20);
-        add(btnCancelar);
-
+        itemAltas.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK)//poner el ctrl a
+        );
+        itemEliminar.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK)//poner el ctrl e
+        );
+        itemModificaciones.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK)//poner el ctrl m
+        );
+        itemConsultas.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK)//poner el ctrl m
+        );
+        menuAlumnos.add(itemAltas);
+        menuAlumnos.add(itemEliminar);
+        menuAlumnos.add(itemModificaciones);
+        menuAlumnos.add(itemConsultas);
+        menuBar.setBackground(new Color(194, 210, 211));
+        setJMenuBar(menuBar);//Añadir el menu a la pantalla, sin este paso no se ve nada
     }
-
-    JButton btnCAceptar, btnBorrar, btnCancelar;
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnCAceptar) {
-            System.out.println("se uso el boton aceptar");
-            System.out.println(cajaNC.getText()+ " nuncc");
-//------------------------PRUEBA PROCESO ALTAS-------------------------------
-            Alumno a = new Alumno(cajaNC.getText(), cajaNombres.getText(),cajaApPaterno.getText(),
-                    cajaApMaterno.getText(), Byte.parseByte(String.valueOf(comboEDAD.getSelectedItem()))  ,
-                    Byte.parseByte(String.valueOf(comboSemestre.getSelectedItem())), String.valueOf(comboCarrera.getSelectedItem()));//Le tenemos que poner parametros vacios para poder hacer el objeto, pero los valores que entraran a la base de datos son los de la instruccion String sql = "INSERT INTO alumnos VALUES('6','86','86','86',86 ,86 , '86'  )";
-            AlumnoDAO alumnoDAO = new AlumnoDAO();//AlumnoDao es el objeto del Packete CONTROLADOR que hace la conexion a la BDD
-            actualizarTabla(tablaAlumnosAltas);
+        if (e.getSource()==itemAltas){//IF ITEM ALTAS
+            System.out.println("es para agregar ");
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run(){
+                    new VentanaAltasAlumnos().new Altas_Alumnos();
 
-            ArrayList<Alumno> lista = alumnoDAO.mostrarAlumnos("");
+                }
+            });
+        }//IF ITEM ALTAS
+        if (e.getSource()==itemEliminar){//IF ITEM BAJAS
+            System.out.println("es para eliminar");
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run(){
+                    new VentanaBajasAlumnos().new Bajas_Alumnos();
 
-            for(Alumno alumno : lista)
-                System.out.println(alumno.getNumControl()+"quesito");
+                }
+            });
+        }//IF ITEM BAJAS
+        if (e.getSource()==itemModificaciones){//IF ITEM MODIFICACIONES
+            System.out.println("es para cambiar/ modificar");
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run(){
+                    new VentanaModificacionesAlumnos().new Cambios_Alumnos();
 
-            System.out.println(lista+"sal");
+                }
+            });
+        }//IF ITEM MODIFICACIONES
+        if (e.getSource()==itemConsultas){//IF ITEM itemConsultas
+            System.out.println("es para consultar/buscar");
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run(){
+                    new VentanaConsultasAlumnos().new Consultas_Alumnos();
+                }
+            });
+        }//IF ITEM itemConsultas
 
-        if (alumnoDAO.agregarAlumno(a))
-            System.out.println("FELICIDADES: se agrego un nuevo Alumno a la BDD (desde la ventanaInicio)");
-        else
-            System.out.println("ERROR: no se pudo agregar un nuevo Alumno a la BDD (desde la ventanaInicio)");
-//---------------------------------------------------------------------------------------------------------------------------------
-
-        }
     }
-
-}//class altas_Alumnos
-
-
+}
 
 
 
 public class VentanaInicio {
     public static void main(String[] args) {
-
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run(){
-                new Altas_Alumnos();
+               // new Altas_Alumnos();
+                new VentanaPantallaCompleta();
             }
         });
 
