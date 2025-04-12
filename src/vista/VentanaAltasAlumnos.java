@@ -147,12 +147,8 @@ public class VentanaAltasAlumnos {
             comboSemestre = new JComboBox<String>();
             comboSemestre.addItem("Elige Semestre...");
             comboSemestre.setBounds(100, 160, 300, 20);
-            comboSemestre.addItem("1");
-            comboSemestre.addItem("2");
-            comboSemestre.addItem("3");
-            comboSemestre.addItem("4");
-            comboSemestre.addItem("5");
-            comboSemestre.addItem("6");
+            for(int i =1; i <=9;i++)
+                comboSemestre.addItem(i);
             add(comboSemestre);
 
             JLabel texCarrera = new JLabel("CARRERA:");

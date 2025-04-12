@@ -40,7 +40,8 @@ public class AlumnoDAO {
     public boolean cambiarAlumno( Alumno alumno){
         String sql = "UPDATE alumnos SET Nombre='" + alumno.getNombre() +"'," +
                 " PrimerAP='" + alumno.getPrimerApellido() +"', SegundoAP='" + alumno.getSegundoApellido() +"'," +
-                " Edad=0, Semestre=0, Carrera='' WHERE Num_Control='" + alumno.getNumControl() + "'";
+                " Edad='"+alumno.getEdad()+"', Semestre='"+alumno.getSemestre()+"', Carrera='"+alumno.getCarrera()+"'" +
+                " WHERE Num_Control='" + alumno.getNumControl() + "'";
         return  conexionBD.ejecutarInstruccionLMD(sql); //retorta 0, 1 o 2... false o true
     }
 

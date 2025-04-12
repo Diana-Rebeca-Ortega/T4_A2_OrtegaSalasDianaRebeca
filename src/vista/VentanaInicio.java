@@ -128,11 +128,6 @@ public class VentanaInicio {
 
 
 /*
-        //----------------PRUEBA PROCESO BAJAS*----------------------------
-        if (alumnoDAO.eliminarAlumnos("6"))
-            System.out.println("FELICIDADES: se ha ELIMINADO correctamente desde la Ven_Inicio");
-        else
-            System.out.println("ERROR:  la ELIMINACION del registro lindo desde la Ven_Inicio no se consiguio");
 
 
 
