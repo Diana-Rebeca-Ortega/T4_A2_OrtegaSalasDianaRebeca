@@ -333,7 +333,7 @@ public class VentanaConsultasAlumnos {
                     }
                 }//********************************************************Carrera
                 if(radioTodos.isSelected()){
-                    if(alumnoDAO.mostrarAlumno(cajaCarrera.getText(), "Carrera")==null
+                    if(alumnoDAO.mostrarAlumno(cajaCarrera.getText(), "TODOS")==null
                             && alumnoDAO.mostrarAlumno(cajaSemestre.getText(), "Semestre")==null
                             && alumnoDAO.mostrarAlumno(cajaEdad.getText(), "Edad")==null
                             && alumnoDAO.mostrarAlumno(cajaApMaterno.getText(), "SegundoAP")==null
@@ -345,7 +345,7 @@ public class VentanaConsultasAlumnos {
                         Alumno ob1 = alumnoDAO.mostrarAlumno(cajaNombres.getText(), "TODOS");
                         actualizarTablaConsultas(tablaAlumnosModificaiones, ob1);
                     }
-                }//********************************************************Carrera
+                }//********************************************************TODOS
 
 
 
