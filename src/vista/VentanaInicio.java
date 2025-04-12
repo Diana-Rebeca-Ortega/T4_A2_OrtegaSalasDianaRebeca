@@ -131,12 +131,6 @@ public class VentanaInicio {
 
 
 
-        //----------------PRUEBA PROCESO CAMBIOS*----------------------------
-        Alumno a1 = new Alumno("1","Luke", "Slit", "-", (byte)10, (byte)10, "ISC");//el 1 es el parametro que se enviara para q todas las casillas sean cambiadas
-        if (alumnoDAO.cambiarAlumno(a1))
-            System.out.println("Registro modificado CORRECTAMENTE desde la Ven_Inicio");
-        else
-            System.out.println("ERROR en la modificacion del registro lindo desde la Ven_Inicio");
 
 
         //----------------PRUEBA PROCESO CONSULTAS*----------------------------

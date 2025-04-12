@@ -22,6 +22,7 @@ public class VentanaBajasAlumnos {
         JLabel texNumConTROL, txtNombre, txtApellidoPaterno, txtApellidoMaterno, txtSemestre, txtCarrera, txtEdad;
         JPanel panelRojo, panelROSA;
         JButton btnBuscar, btnBorrar, btnEliminar, btnCancelar;
+
         public Bajas_Alumnos() {
             getContentPane().setLayout(null);
             setTitle("Bajas Alunos");
@@ -133,6 +134,8 @@ public class VentanaBajasAlumnos {
             add(txtSemestre);
             add(txtCarrera);
 
+
+
             Border borde = BorderFactory.createLineBorder(   Color.BLACK);
 
             cajaNombre = new JLabel();
@@ -238,6 +241,16 @@ if (e.getSource().equals(btnBorrar)){//*****************************************
             if( e.getSource().equals(btnCancelar)){
                 setVisible(false);
                 //aqui podriamos poner un historial q regrese los valores
+            }
+            if (e.getSource() == btnBorrar) {//**********************************************************************
+                cajaNC.setText("");
+                cajaApPaterno.setText("");
+                cajaApMaterno.setText("");
+                cajaNombre.setText("");
+                cajaCarrera.setText("");
+                cajaSemestre.setText("");
+                cajaEdad.setText("");
+
             }
 
         }//escuchador bajas
