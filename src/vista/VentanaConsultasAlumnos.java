@@ -2,33 +2,40 @@ package vista;
 
 import Controlador.AlumnoDAO;
 import modelo.Alumno;
+import modelo.ResultSetTableModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class VentanaConsultasAlumnos {
     //********************************************************************************************
     //**************************    CONSULTAS   *********************************************************
     class Consultas_Alumnos extends JFrame  implements  ActionListener{
+        AlumnoDAO alumnoDAO = new AlumnoDAO();
         JPanel panelAzul, panelCian;
         JTable tablaAlumnosModificaiones;
-       JLabel texCriterioBusqueda;
+        JLabel texCriterioBusqueda;
         JButton btnBuscar, btnBorrar,btnCancelar;
         JRadioButton radioTodos, radioNombre, radioAPpaterno, radioAPMaterno,radioEdad, radioSemestre, radioCarrera;
-        JTextField cajaNombres, cajaApPaterno,  cajaApMaterno, cajaEdad, cajaSemestre, cajaCarrera  ;
+        JTextField cajaNombres, cajaApPaterno,  cajaApMaterno  ;
+        JButton btnPrimero, btnUltimo, btnAnterior,btnDespues;
+        JTextField buscador ;
+        JComboBox<String> cajaEdad,cajaSemestre, cajaCarrera ;
         ButtonGroup grupo = new ButtonGroup();
         public Consultas_Alumnos() {
             getContentPane().setLayout(null);
             setTitle("Buscar Alunos");
-            setSize(630, 480);
+            setSize(680, 480);
             setLocationRelativeTo(null);//locacion en la ventana
             setVisible(true);
 
             tablaAlumnosModificaiones = new JTable();
             tablaAlumnosModificaiones.setModel(new javax.swing.table.DefaultTableModel(
+
                     new Object[][]{
                             {null, null, null, null, null, null, null},
                             {null, null, null, null, null, null, null},
@@ -46,27 +53,90 @@ public class VentanaConsultasAlumnos {
                     return canEdit[columnIndex];
                 }
             });
+            //Actualizar el primer registro
+            Alumno ob1 = alumnoDAO.mostrarAlumno("", "Uno");
+            actualizarTablaConsultas(tablaAlumnosModificaiones, ob1);
             //PANEL VERDE MENTA
             panelCian = new JPanel();
             panelCian.setLayout(null);
             panelCian.setBackground(new Color(26, 221, 234  ));
             panelCian.setBounds(10, 240, 600, 200);
 
+            //JButton btnPrimero, btnUltimo, btnAnterior,btnDespues;
+            btnPrimero = new JButton("<<");
+            btnUltimo = new JButton(">>");
+            btnAnterior = new JButton("<");
+            btnDespues = new JButton(">");
+            buscador= new JTextField("      0");
+
+            btnPrimero.setBounds(180,15, 50,20);
+            btnUltimo.setBounds(380,15, 50,20);
+            btnAnterior.setBounds(230,15, 50,20);
+            btnDespues.setBounds(330,15, 50,20);
+            buscador.setBounds(280,15,50,20);
+
+            btnPrimero.setToolTipText("Este boton se direcciona al primer registro");
+            btnUltimo.setToolTipText("Este boton se direcciona al ultimo registro");
+            btnAnterior.setToolTipText("Este boton se direcciona al registro anterior");
+            btnDespues.setToolTipText("Este boton se direcciona al registro siguiente");
+            buscador.setToolTipText("Este boton se direcciona al numero de registro seleccionado");
+
+            panelCian.add(btnPrimero);
+            panelCian.add(btnUltimo);
+            panelCian.add(btnAnterior);
+            panelCian.add(btnDespues);
+            panelCian.add(buscador);
+
+            btnPrimero.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(e.getSource()==btnPrimero){
+                        Alumno al = alumnoDAO.mostrarAlumno("","Uno");
+                        actualizarTablaConsultas(tablaAlumnosModificaiones, al);
+                        cajaNombres.setText(al.getNombre());
+                        cajaApPaterno.setText(al.getPrimerApellido());
+                        cajaApMaterno.setText(al.getSegundoApellido());
+                        cajaEdad.setSelectedItem(al.getEdad()+"");
+                        cajaSemestre.setSelectedItem(al.getSemestre()+"");
+                        cajaCarrera.setSelectedItem(al.getCarrera());
+                    }
+                }
+            });
+            btnUltimo.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(e.getSource()==btnUltimo){
+                        Alumno al = alumnoDAO.mostrarAlumno(tablaAlumnosModificaiones.getRowCount()-1+"","Ultimo");
+                        actualizarTablaConsultas(tablaAlumnosModificaiones, al);
+                        cajaNombres.setText(al.getNombre());
+                        cajaApPaterno.setText(al.getPrimerApellido());
+                        cajaApMaterno.setText(al.getSegundoApellido());
+                        cajaEdad.setSelectedItem(al.getEdad()+"")   ;
+                        cajaSemestre.setSelectedItem(al.getSemestre()+"");
+                        cajaCarrera.setSelectedItem(al.getCarrera());
+
+                    }
+                }
+            });
+            btnAnterior.addActionListener(this);
+            btnDespues.addActionListener(this);
+            buscador.addActionListener(this);
+
+
 // Agregar la tabla a un JScrollPane
             JScrollPane scrollPane = new JScrollPane(tablaAlumnosModificaiones);
-            scrollPane.setBounds(10, 10, 580, 180);
+            scrollPane.setBounds(10, 60, 580, 180);
             panelCian.add(scrollPane);
             add(panelCian);
-
 
 
 //Panel AZUL TITULO
             panelAzul = new JPanel();
             panelAzul.setLayout(null);
             panelAzul.setBackground(new Color(26, 32, 234  ));
-            panelAzul.setBounds(0, 0, 610, 30);
+            panelAzul.setBounds(0, 0, 660, 30);
             JLabel texBAJAS = new JLabel("    CONSULTAS ALUMNOS:");
-            texBAJAS.setBounds(10, 00, 300, 20);
+            texBAJAS.setBounds(10, 0, 300, 20);
             texBAJAS.setForeground(Color.WHITE);
             panelAzul.add(texBAJAS);
             add(panelAzul);
@@ -104,7 +174,6 @@ public class VentanaConsultasAlumnos {
             radioEdad = new JRadioButton("Edad:");
             radioSemestre= new JRadioButton("Semestre:");
             radioCarrera= new JRadioButton("Carrera:");
-
 
 
             radioTodos = new JRadioButton("TODOS");
@@ -165,20 +234,36 @@ public class VentanaConsultasAlumnos {
             add(radioEdad);
             add(radioSemestre);
             add(radioCarrera);
+            //Poner los datos del primer registro al abrir la ventana consultas
+Alumno al = alumnoDAO.mostrarAlumno("","Uno");
+        cajaNombres = new JTextField(al.getNombre());
+        cajaApPaterno = new JTextField(al.getPrimerApellido());
+        cajaApMaterno = new JTextField(al.getSegundoApellido());
 
-        cajaNombres = new JTextField();
-        cajaApPaterno = new JTextField();
-        cajaApMaterno = new JTextField();
-        cajaEdad = new JTextField();
-        cajaSemestre = new JTextField();
-        cajaCarrera = new JTextField();
+        cajaEdad = new JComboBox<String>();////////////////////////////
+        cajaEdad.addItem("");
+        for(int i =1; i <99;i++){
+            cajaEdad.addItem(i+"");}/////////////////////////
+
+        cajaSemestre = new JComboBox<>();////////////////////////////
+            cajaSemestre.addItem("");
+            for(int i =1; i <=9;i++)
+                cajaSemestre.addItem(i+"");/////////////////////
+
+        cajaCarrera = new JComboBox<>();///////////////////////////////////
+            cajaCarrera.addItem("");
+            cajaCarrera.addItem("Ingenieria en Sistemas Computaconalesº");
+            cajaCarrera.addItem("Ingenieria Mecatronicaº");
+            cajaCarrera.addItem("Ingenieria en Industrias Alimentariasº");
+            ///////////////////////////////////////////////////////////////////
 
             cajaNombres.setEditable(false);
             cajaApPaterno.setEditable(false);
             cajaApMaterno.setEditable(false);
-            cajaEdad.setEditable(false);
             cajaSemestre.setEditable(false);
+            cajaEdad.setEditable(false);
             cajaCarrera.setEditable(false);
+
 
         cajaNombres.setBounds(180, 60, 250, 20);
         cajaApPaterno.setBounds(230, 90, 220, 20);
@@ -188,6 +273,7 @@ public class VentanaConsultasAlumnos {
         cajaCarrera.setBounds(200, 210, 250, 20);
 
 
+
         add(cajaNombres);
         add(cajaApPaterno);
         add(cajaApMaterno);
@@ -195,11 +281,12 @@ public class VentanaConsultasAlumnos {
         add(cajaSemestre);
         add(cajaCarrera);
 
-        }//constructor
-        public void SeleccionBotones (JRadioButton botonSeleccionado, JTextField a,  ActionEvent E,
-                                      JTextField b, JTextField c, JTextField d, JTextField e, JTextField f,
-                                      JRadioButton A,  JRadioButton B,  JRadioButton C, JRadioButton D,  JRadioButton F
 
+        }//constructor
+
+        public void SeleccionBotones (JRadioButton botonSeleccionado, JTextField a,  ActionEvent E,
+                                      JTextField b, JTextField c, JComboBox<String> d,  JComboBox<String> f ,  JComboBox<String> g,
+                                      JRadioButton A,  JRadioButton B,  JRadioButton C, JRadioButton D,  JRadioButton F
         ){
             if(E.getSource()==botonSeleccionado){
                 if (botonSeleccionado.isSelected()){
@@ -207,8 +294,8 @@ public class VentanaConsultasAlumnos {
                     b.setEditable(false);
                     c.setEditable(false);
                     d.setEditable(false);
-                    e.setEditable(false);
                     f.setEditable(false);
+                    g.setEditable(false);
 
                     A.setSelected(false);
                     B.setSelected(false);
@@ -216,15 +303,44 @@ public class VentanaConsultasAlumnos {
                     D.setSelected(false);
                     F.setSelected(false);
 
+                }else{
+                    a.setEditable(false);
+                    b.setEditable(false);
+                    c.setEditable(false);
+                    d.setEditable(false);
+                    f.setEditable(false);
+                    g.setEditable(false);
 
+                }
+            }
+        }
+        public void SeleccionBotonesDos (JRadioButton botonSeleccionado, JComboBox a,  ActionEvent E,
+                                      JTextField b, JTextField c, JTextField d,  JComboBox<String> f ,  JComboBox<String> g,
+                                      JRadioButton A,  JRadioButton B,  JRadioButton C, JRadioButton D,  JRadioButton F
+        ){
+            if(E.getSource()==botonSeleccionado){
+                if (botonSeleccionado.isSelected()){
+                    a.setEditable(true);
+                    b.setEditable(false);
+                    c.setEditable(false);
+                    d.setEditable(false);
+                    f.setEditable(false);
+                    g.setEditable(false);
+
+                    A.setSelected(false);
+                    B.setSelected(false);
+                    C.setSelected(false);
+                    D.setSelected(false);
+                    F.setSelected(false);
 
                 }else{
                     a.setEditable(false);
                     b.setEditable(false);
                     c.setEditable(false);
                     d.setEditable(false);
-                    e.setEditable(false);
                     f.setEditable(false);
+                    g.setEditable(false);
+
                 }
             }
         }
@@ -241,6 +357,7 @@ public class VentanaConsultasAlumnos {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+//inabilitar les demas espacios de los radiobuttons   ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
 
             if(e.getSource()==radioNombre){
                 SeleccionBotones(radioNombre,cajaNombres,e, cajaApPaterno, cajaApMaterno,
@@ -262,24 +379,25 @@ public class VentanaConsultasAlumnos {
                 );
             }
             if(e.getSource()==radioEdad){
-                SeleccionBotones(radioEdad,cajaEdad,e,cajaNombres , cajaApPaterno, cajaApMaterno,
+                SeleccionBotonesDos(radioEdad,cajaEdad,e,cajaNombres , cajaApPaterno, cajaApMaterno,
                         cajaSemestre, cajaCarrera,
                         radioNombre, radioAPpaterno, radioAPMaterno,radioSemestre,radioCarrera
-                        );
+                );
             }
             if(e.getSource()==radioSemestre){
-                SeleccionBotones(radioSemestre,cajaSemestre,e,cajaNombres , cajaApMaterno,
-                        cajaEdad, cajaEdad, cajaCarrera,
+                SeleccionBotonesDos(radioSemestre,cajaSemestre,e,cajaNombres , cajaApMaterno,
+                        cajaApPaterno, cajaEdad, cajaCarrera,
                         radioNombre, radioAPpaterno, radioAPMaterno,radioEdad,radioCarrera
-                        );
+                );
             }
             if(e.getSource()==radioCarrera){
-                SeleccionBotones(radioCarrera,cajaCarrera,e,cajaNombres , cajaApMaterno,
-                        cajaEdad, cajaEdad, cajaSemestre,
+                SeleccionBotonesDos(radioCarrera,cajaCarrera,e,cajaNombres , cajaApMaterno,
+                        cajaApPaterno, cajaEdad, cajaSemestre,
                         radioNombre, radioAPpaterno, radioAPMaterno,radioEdad,radioSemestre
-                        );
+                );
             }
-            AlumnoDAO alumnoDAO = new AlumnoDAO();
+          //inabilitar les demas espacios de los radiobuttons   ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
+
 
 
             if(e.getSource()==btnBuscar){//*********************************************
@@ -308,34 +426,35 @@ public class VentanaConsultasAlumnos {
                         actualizarTablaConsultas(tablaAlumnosModificaiones, ob1);
                     }
                 }//********************************************************APMaterno
+
                 if(radioEdad.isSelected()){
-                    if(alumnoDAO.mostrarAlumno(cajaEdad.getText(), "Edad")==null){
+                    if(alumnoDAO.mostrarAlumno(cajaEdad.getSelectedItem()+"", "Edad")==null){
                         JOptionPane.showMessageDialog(null,  "No se encontraron registros");
                     }else {
-                        Alumno ob1 = alumnoDAO.mostrarAlumno(cajaEdad.getText(), "Edad");
+                        Alumno ob1 = alumnoDAO.mostrarAlumno(cajaEdad.getSelectedItem()+"", "Edad");
                         actualizarTablaConsultas(tablaAlumnosModificaiones, ob1);
                     }
                 }//********************************************************EDAD
                 if(radioSemestre.isSelected()){
-                    if(alumnoDAO.mostrarAlumno(cajaSemestre.getText(), "Semestre")==null){
+                    if(alumnoDAO.mostrarAlumno(cajaSemestre.getSelectedItem()+"", "Semestre")==null){
                         JOptionPane.showMessageDialog(null,  "No se encontraron registros");
                     }else {
-                        Alumno ob1 = alumnoDAO.mostrarAlumno(cajaSemestre.getText(), "Semestre");
+                        Alumno ob1 = alumnoDAO.mostrarAlumno(cajaSemestre.getSelectedItem()+"", "Semestre");
                         actualizarTablaConsultas(tablaAlumnosModificaiones, ob1);
                     }
                 }//********************************************************Semestre
                 if(radioCarrera.isSelected()){
-                    if(alumnoDAO.mostrarAlumno(cajaCarrera.getText(), "Carrera")==null){
+                    if(alumnoDAO.mostrarAlumno(cajaCarrera.getSelectedItem()+"", "Carrera")==null){
                         JOptionPane.showMessageDialog(null,  "No se encontraron registros");
                     }else {
-                        Alumno ob1 = alumnoDAO.mostrarAlumno(cajaCarrera.getText(), "Carrera");
+                        Alumno ob1 = alumnoDAO.mostrarAlumno(cajaCarrera.getSelectedItem()+"", "Carrera");
                         actualizarTablaConsultas(tablaAlumnosModificaiones, ob1);
                     }
                 }//********************************************************Carrera
                 if(radioTodos.isSelected()){
-                    if(alumnoDAO.mostrarAlumno(cajaCarrera.getText(), "TODOS")==null
-                            && alumnoDAO.mostrarAlumno(cajaSemestre.getText(), "Semestre")==null
-                            && alumnoDAO.mostrarAlumno(cajaEdad.getText(), "Edad")==null
+                    if(alumnoDAO.mostrarAlumno(cajaCarrera.getSelectedItem()+"", "TODOS")==null
+                            && alumnoDAO.mostrarAlumno(cajaSemestre.getSelectedItem()+"", "Semestre")==null
+                            && alumnoDAO.mostrarAlumno(cajaEdad.getSelectedItem()+"", "Edad")==null
                             && alumnoDAO.mostrarAlumno(cajaApMaterno.getText(), "SegundoAP")==null
                             && alumnoDAO.mostrarAlumno(cajaApPaterno.getText(), "PrimerAP")==null
                             &&alumnoDAO.mostrarAlumno(cajaNombres.getText(), "Nombre")==null
@@ -359,9 +478,9 @@ public class VentanaConsultasAlumnos {
                 cajaNombres.setText("");
                 cajaApPaterno.setText("");
                 cajaApMaterno.setText("");
-                cajaEdad.setText("");
-                cajaSemestre.setText("");
-                cajaCarrera.setText("");
+                cajaEdad.setSelectedIndex(0);
+                cajaSemestre.setSelectedIndex(0);
+                cajaCarrera.setSelectedIndex(0);
                 tablaAlumnosModificaiones.setValueAt(null, 0,0);
                 tablaAlumnosModificaiones.setValueAt(null, 0,1);
                 tablaAlumnosModificaiones.setValueAt(null, 0,2);
