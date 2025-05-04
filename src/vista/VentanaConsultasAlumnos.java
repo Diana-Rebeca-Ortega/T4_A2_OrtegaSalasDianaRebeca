@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -25,7 +27,8 @@ public class VentanaConsultasAlumnos {
         JButton btnPrimero, btnUltimo, btnAnterior,btnDespues;
         JTextField buscador ;
         JComboBox<String> cajaEdad,cajaSemestre, cajaCarrera ;
-        ButtonGroup grupo = new ButtonGroup();
+
+        int pagina=1;
         public Consultas_Alumnos() {
             getContentPane().setLayout(null);
             setTitle("Buscar Alunos");
@@ -67,7 +70,9 @@ public class VentanaConsultasAlumnos {
             btnUltimo = new JButton(">>");
             btnAnterior = new JButton("<");
             btnDespues = new JButton(">");
-            buscador= new JTextField("      0");
+            buscador= new JTextField("1");
+            buscador.setHorizontalAlignment(JTextField.CENTER);
+            btnAnterior.setEnabled(false);
 
             btnPrimero.setBounds(180,15, 50,20);
             btnUltimo.setBounds(380,15, 50,20);
@@ -87,10 +92,16 @@ public class VentanaConsultasAlumnos {
             panelCian.add(btnDespues);
             panelCian.add(buscador);
 
+
+
             btnPrimero.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if(e.getSource()==btnPrimero){
+                        btnAnterior.setEnabled(false);
+                        btnDespues.setEnabled(true);
+                        pagina=1;
+                        buscador.setText(pagina+"");
                         Alumno al = alumnoDAO.mostrarAlumno("","Uno");
                         actualizarTablaConsultas(tablaAlumnosModificaiones, al);
                         cajaNombres.setText(al.getNombre());
@@ -106,7 +117,83 @@ public class VentanaConsultasAlumnos {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if(e.getSource()==btnUltimo){
+                        btnAnterior.setEnabled(true);
+                        btnDespues.setEnabled(false);
+                        pagina= tablaAlumnosModificaiones.getRowCount();
+                        buscador.setText(pagina+"");
                         Alumno al = alumnoDAO.mostrarAlumno(tablaAlumnosModificaiones.getRowCount()-1+"","Ultimo");
+                        actualizarTablaConsultas(tablaAlumnosModificaiones, al);
+                        cajaNombres.setText(al.getNombre());
+                        cajaApPaterno.setText(al.getPrimerApellido());
+                        cajaApMaterno.setText(al.getSegundoApellido());
+                        cajaEdad.setSelectedItem(al.getEdad()+"")   ;
+                        cajaSemestre.setSelectedItem(al.getSemestre()+"");
+                        cajaCarrera.setSelectedItem(al.getCarrera());
+                    }
+                }
+            });
+            btnAnterior.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(e.getSource()==btnAnterior){
+                        btnDespues.setEnabled(true);
+                        pagina= pagina-1;
+                        if(pagina==1)
+                            btnAnterior.setEnabled(false);
+                        buscador.setText(pagina+"");
+                        Alumno al = alumnoDAO.mostrarAlumno((pagina-1)+"","Ultimo");
+                        actualizarTablaConsultas(tablaAlumnosModificaiones, al);
+                        cajaNombres.setText(al.getNombre());
+                        cajaApPaterno.setText(al.getPrimerApellido());
+                        cajaApMaterno.setText(al.getSegundoApellido());
+                        cajaEdad.setSelectedItem(al.getEdad()+"")   ;
+                        cajaSemestre.setSelectedItem(al.getSemestre()+"");
+                        cajaCarrera.setSelectedItem(al.getCarrera());
+                    }
+                }
+            });
+            buscador.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyTyped(KeyEvent e) {
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if(e.getKeyCode()==KeyEvent.VK_ENTER){
+                        pagina= Integer.parseInt(buscador.getText());
+                        if (pagina==1){
+                            btnAnterior.setEnabled(false);
+                            btnDespues.setEnabled(true);
+                        }else if(pagina==tablaAlumnosModificaiones.getRowCount()){
+                            btnAnterior.setEnabled(true);
+                            btnDespues.setEnabled(false);
+                        }else{
+                            btnAnterior.setEnabled(true);
+                            btnDespues.setEnabled(true);
+                        }
+                        Alumno al = alumnoDAO.mostrarAlumno((pagina-1)+"","Ultimo");
+                        actualizarTablaConsultas(tablaAlumnosModificaiones, al);
+                        cajaNombres.setText(al.getNombre());
+                        cajaApPaterno.setText(al.getPrimerApellido());
+                        cajaApMaterno.setText(al.getSegundoApellido());
+                        cajaEdad.setSelectedItem(al.getEdad()+"")   ;
+                        cajaSemestre.setSelectedItem(al.getSemestre()+"");
+                        cajaCarrera.setSelectedItem(al.getCarrera());
+                    }else{
+                        System.out.println("no hay val");
+                    }
+                }
+            });
+            btnDespues.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(e.getSource()==btnDespues){
+                        btnAnterior.setEnabled(true);
+                        pagina= pagina+1;
+                        if(pagina==tablaAlumnosModificaiones.getRowCount())
+                            btnDespues.setEnabled(false);
+                        buscador.setText(pagina+"");
+                        Alumno al = alumnoDAO.mostrarAlumno((pagina-1)+"","Ultimo");
                         actualizarTablaConsultas(tablaAlumnosModificaiones, al);
                         cajaNombres.setText(al.getNombre());
                         cajaApPaterno.setText(al.getPrimerApellido());
@@ -118,9 +205,6 @@ public class VentanaConsultasAlumnos {
                     }
                 }
             });
-            btnAnterior.addActionListener(this);
-            btnDespues.addActionListener(this);
-            buscador.addActionListener(this);
 
 
 // Agregar la tabla a un JScrollPane
@@ -242,19 +326,20 @@ Alumno al = alumnoDAO.mostrarAlumno("","Uno");
 
         cajaEdad = new JComboBox<String>();////////////////////////////
         cajaEdad.addItem("");
-        for(int i =1; i <99;i++){
+        for(int i =0; i <99;i++){
             cajaEdad.addItem(i+"");}/////////////////////////
-
+            cajaEdad.setSelectedIndex(al.getEdad()+1);
         cajaSemestre = new JComboBox<>();////////////////////////////
             cajaSemestre.addItem("");
             for(int i =1; i <=9;i++)
                 cajaSemestre.addItem(i+"");/////////////////////
-
-        cajaCarrera = new JComboBox<>();///////////////////////////////////
+            cajaSemestre.setSelectedIndex(al.getSemestre());
+            cajaCarrera = new JComboBox<>();///////////////////////////////////
             cajaCarrera.addItem("");
             cajaCarrera.addItem("Ingenieria en Sistemas Computaconalesº");
             cajaCarrera.addItem("Ingenieria Mecatronicaº");
             cajaCarrera.addItem("Ingenieria en Industrias Alimentariasº");
+            cajaCarrera.setSelectedItem(al.getCarrera());
             ///////////////////////////////////////////////////////////////////
 
             cajaNombres.setEditable(false);

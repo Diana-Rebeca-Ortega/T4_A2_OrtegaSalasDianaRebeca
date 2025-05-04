@@ -58,6 +58,12 @@ public class AlumnoDAO {
         if (tipoBusqueda.equals("Ultimo")){
             sql = "select * from alumnos ORDER BY Num_Control DESC LIMIT "+filtro+",1;";
         }
+        if (tipoBusqueda.equals("Siguiente")){
+            sql = "select * from alumnos ORDER BY Num_Control DESC LIMIT "+filtro+",1;";
+        }
+        if (tipoBusqueda.equals("Anterior")){
+            sql = "select * from alumnos ORDER BY Num_Control DESC LIMIT "+filtro+",1;";
+        }
 
         if (tipoBusqueda.equals("PrimerAP")){
             sql = "SELECT * FROM alumnos WHERE PrimerAP='"+filtro+"'";
