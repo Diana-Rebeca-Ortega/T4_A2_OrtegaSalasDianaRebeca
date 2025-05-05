@@ -10,8 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.SQLException;
-import java.util.ArrayList;
+
 
 public class VentanaConsultasAlumnos {
     //********************************************************************************************
@@ -27,6 +26,8 @@ public class VentanaConsultasAlumnos {
         JButton btnPrimero, btnUltimo, btnAnterior,btnDespues;
         JTextField buscador ;
         JComboBox<String> cajaEdad,cajaSemestre, cajaCarrera ;
+        JRadioButton ISC, IIA, IM, LA, LC;
+        ButtonGroup buttonGroup = new ButtonGroup();
 
         int pagina=1;
         public Consultas_Alumnos() {
@@ -65,6 +66,97 @@ public class VentanaConsultasAlumnos {
             panelCian.setBackground(new Color(26, 221, 234  ));
             panelCian.setBounds(10, 240, 600, 200);
 
+            //RadioButons Carrera
+            ISC = new JRadioButton("ISC");
+            IM = new JRadioButton("IM");
+            IIA = new JRadioButton("IIA");
+            LA = new JRadioButton("LA");
+            LC = new JRadioButton("LC");
+
+            ISC.setBounds(180,35, 50,20);
+            IM.setBounds(380,35, 50,20);
+            IIA.setBounds(230,35, 50,20);
+            LA.setBounds(330,35, 50,20);
+            LC.setBounds(280,35,50,20);
+
+            buttonGroup.add(ISC);
+            buttonGroup.add(IIA);
+            buttonGroup.add(IM);
+            buttonGroup.add(LA);
+            buttonGroup.add(LC);
+
+            ISC.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Alumno al = alumnoDAO.mostrarAlumno("","ISC");
+                    actualizarTablaConsultas(tablaAlumnosModificaiones, al);
+                    cajaNombres.setText(al.getNombre());
+                    cajaApPaterno.setText(al.getPrimerApellido());
+                    cajaApMaterno.setText(al.getSegundoApellido());
+                    cajaEdad.setSelectedItem(al.getEdad()+"");
+                    cajaSemestre.setSelectedItem(al.getSemestre()+"");
+                    cajaCarrera.setSelectedItem(al.getCarrera());
+                }
+            });
+            IM.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Alumno al = alumnoDAO.mostrarAlumno("","IM");
+                    actualizarTablaConsultas(tablaAlumnosModificaiones, al);
+                    cajaNombres.setText(al.getNombre());
+                    cajaApPaterno.setText(al.getPrimerApellido());
+                    cajaApMaterno.setText(al.getSegundoApellido());
+                    cajaEdad.setSelectedItem(al.getEdad()+"");
+                    cajaSemestre.setSelectedItem(al.getSemestre()+"");
+                    cajaCarrera.setSelectedItem(al.getCarrera());
+                }
+            });
+            IIA.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Alumno al = alumnoDAO.mostrarAlumno("","IIA");
+                    actualizarTablaConsultas(tablaAlumnosModificaiones, al);
+                    cajaNombres.setText(al.getNombre());
+                    cajaApPaterno.setText(al.getPrimerApellido());
+                    cajaApMaterno.setText(al.getSegundoApellido());
+                    cajaEdad.setSelectedItem(al.getEdad()+"");
+                    cajaSemestre.setSelectedItem(al.getSemestre()+"");
+                    cajaCarrera.setSelectedItem(al.getCarrera());
+                }
+            });
+            LA.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Alumno al = alumnoDAO.mostrarAlumno("","LA");
+                    actualizarTablaConsultas(tablaAlumnosModificaiones, al);
+                    cajaNombres.setText(al.getNombre());
+                    cajaApPaterno.setText(al.getPrimerApellido());
+                    cajaApMaterno.setText(al.getSegundoApellido());
+                    cajaEdad.setSelectedItem(al.getEdad()+"");
+                    cajaSemestre.setSelectedItem(al.getSemestre()+"");
+                    cajaCarrera.setSelectedItem(al.getCarrera());
+                }
+            });
+            LC.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Alumno al = alumnoDAO.mostrarAlumno("","LC");
+                    actualizarTablaConsultas(tablaAlumnosModificaiones, al);
+                    cajaNombres.setText(al.getNombre());
+                    cajaApPaterno.setText(al.getPrimerApellido());
+                    cajaApMaterno.setText(al.getSegundoApellido());
+                    cajaEdad.setSelectedItem(al.getEdad()+"");
+                    cajaSemestre.setSelectedItem(al.getSemestre()+"");
+                    cajaCarrera.setSelectedItem(al.getCarrera());
+                }
+            });
+
+            panelCian.add(IIA);
+            panelCian.add(ISC);
+            panelCian.add(IM);
+            panelCian.add(LA);
+            panelCian.add(LC);
+
             //JButton btnPrimero, btnUltimo, btnAnterior,btnDespues;
             btnPrimero = new JButton("<<");
             btnUltimo = new JButton(">>");
@@ -74,11 +166,11 @@ public class VentanaConsultasAlumnos {
             buscador.setHorizontalAlignment(JTextField.CENTER);
             btnAnterior.setEnabled(false);
 
-            btnPrimero.setBounds(180,15, 50,20);
-            btnUltimo.setBounds(380,15, 50,20);
-            btnAnterior.setBounds(230,15, 50,20);
-            btnDespues.setBounds(330,15, 50,20);
-            buscador.setBounds(280,15,50,20);
+            btnPrimero.setBounds(180,10, 50,20);
+            btnUltimo.setBounds(380,10, 50,20);
+            btnAnterior.setBounds(230,10, 50,20);
+            btnDespues.setBounds(330,10, 50,20);
+            buscador.setBounds(280,10,50,20);
 
             btnPrimero.setToolTipText("Este boton se direcciona al primer registro");
             btnUltimo.setToolTipText("Este boton se direcciona al ultimo registro");
@@ -91,7 +183,7 @@ public class VentanaConsultasAlumnos {
             panelCian.add(btnAnterior);
             panelCian.add(btnDespues);
             panelCian.add(buscador);
-
+            System.out.println("AAAAAAAAAAA"+alumnoDAO.tamañoTablas());
 
 
             btnPrimero.addActionListener(new ActionListener() {
@@ -119,9 +211,9 @@ public class VentanaConsultasAlumnos {
                     if(e.getSource()==btnUltimo){
                         btnAnterior.setEnabled(true);
                         btnDespues.setEnabled(false);
-                        pagina= tablaAlumnosModificaiones.getRowCount();
+                        pagina=alumnoDAO.tamañoTablas();
                         buscador.setText(pagina+"");
-                        Alumno al = alumnoDAO.mostrarAlumno(tablaAlumnosModificaiones.getRowCount()-1+"","Ultimo");
+                        Alumno al = alumnoDAO.mostrarAlumno(alumnoDAO.tamañoTablas()-1+"","Ultimo");
                         actualizarTablaConsultas(tablaAlumnosModificaiones, al);
                         cajaNombres.setText(al.getNombre());
                         cajaApPaterno.setText(al.getPrimerApellido());
@@ -159,12 +251,17 @@ public class VentanaConsultasAlumnos {
 
                 @Override
                 public void keyPressed(KeyEvent e) {
+                   try {
+
                     if(e.getKeyCode()==KeyEvent.VK_ENTER){
                         pagina= Integer.parseInt(buscador.getText());
+                        if (pagina> alumnoDAO.tamañoTablas()  || pagina< 1  ){
+                            JOptionPane.showMessageDialog(null,"El numero de registro seleccionado no existe");
+                        }else {
                         if (pagina==1){
                             btnAnterior.setEnabled(false);
                             btnDespues.setEnabled(true);
-                        }else if(pagina==tablaAlumnosModificaiones.getRowCount()){
+                        }else if(pagina==alumnoDAO.tamañoTablas()){
                             btnAnterior.setEnabled(true);
                             btnDespues.setEnabled(false);
                         }else{
@@ -179,10 +276,12 @@ public class VentanaConsultasAlumnos {
                         cajaEdad.setSelectedItem(al.getEdad()+"")   ;
                         cajaSemestre.setSelectedItem(al.getSemestre()+"");
                         cajaCarrera.setSelectedItem(al.getCarrera());
-                    }else{
-                        System.out.println("no hay val");
-                    }
-                }
+                    }}
+                   }catch (NumberFormatException e1){
+                        JOptionPane.showMessageDialog(null,"ERROR: El buscador de registros solo admite numeros");
+                   }
+                }// castch
+
             });
             btnDespues.addActionListener(new ActionListener() {
                 @Override
@@ -190,7 +289,7 @@ public class VentanaConsultasAlumnos {
                     if(e.getSource()==btnDespues){
                         btnAnterior.setEnabled(true);
                         pagina= pagina+1;
-                        if(pagina==tablaAlumnosModificaiones.getRowCount())
+                        if(pagina==alumnoDAO.tamañoTablas())
                             btnDespues.setEnabled(false);
                         buscador.setText(pagina+"");
                         Alumno al = alumnoDAO.mostrarAlumno((pagina-1)+"","Ultimo");

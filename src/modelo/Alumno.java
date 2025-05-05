@@ -8,6 +8,7 @@ public class Alumno {
     private byte edad;
     private byte  semestre;
     private  String carrera;
+    private int tamañoTabla;
 public VentanaInicio abcc_datos_pantalla = new VentanaInicio();
 
     public Alumno(String numControl, String nombre, String primerApellido, String segundoApellido, byte edad, byte semestre, String carrera) {
@@ -75,4 +76,6 @@ public VentanaInicio abcc_datos_pantalla = new VentanaInicio();
     public void setCarrera(String carrera) {
         this.carrera = carrera;
     }
+
+
 }
